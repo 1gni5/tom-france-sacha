@@ -11,7 +11,7 @@ import SwiftUI
 struct TOMFrance_SachaApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            HomePageView()
         }
     }
 }
