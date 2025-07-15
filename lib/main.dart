@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoApp(
-      title: 'Flutter Demo',
+      title: 'Sacha App',
       theme: const CupertinoThemeData(
         primaryColor: CupertinoColors.systemPurple,
       ),
