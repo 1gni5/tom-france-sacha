@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		844C99472E26A1D2002DBB32 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 844C99462E26A1D2002DBB32 /* RealmSwift */; };
+		844C99482E26A1D2002DBB32 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 844C99462E26A1D2002DBB32 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		84790F432E267B3E00BCB887 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -22,6 +27,20 @@
 			remoteInfo = TOMFrance.Sacha;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		84790F6E2E26988800BCB887 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				844C99482E26A1D2002DBB32 /* RealmSwift in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		84790F352E267B3C00BCB887 /* TOMFrance.Sacha.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TOMFrance.Sacha.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -52,6 +71,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				844C99472E26A1D2002DBB32 /* RealmSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,12 +92,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		844C99452E26A1D2002DBB32 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		84790F2C2E267B3C00BCB887 = {
 			isa = PBXGroup;
 			children = (
 				84790F372E267B3C00BCB887 /* TOMFrance.Sacha */,
 				84790F452E267B3E00BCB887 /* TOMFrance.SachaTests */,
 				84790F4F2E267B3E00BCB887 /* TOMFrance.SachaUITests */,
+				844C99452E26A1D2002DBB32 /* Frameworks */,
 				84790F362E267B3C00BCB887 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -102,6 +130,7 @@
 				84790F312E267B3C00BCB887 /* Sources */,
 				84790F322E267B3C00BCB887 /* Frameworks */,
 				84790F332E267B3C00BCB887 /* Resources */,
+				84790F6E2E26988800BCB887 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -112,6 +141,7 @@
 			);
 			name = TOMFrance.Sacha;
 			packageProductDependencies = (
+				844C99462E26A1D2002DBB32 /* RealmSwift */,
 			);
 			productName = TOMFrance.Sacha;
 			productReference = 84790F352E267B3C00BCB887 /* TOMFrance.Sacha.app */;
@@ -195,6 +225,9 @@
 			);
 			mainGroup = 84790F2C2E267B3C00BCB887;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				84790F6A2E26985100BCB887 /* XCRemoteSwiftPackageReference "realm-swift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 84790F362E267B3C00BCB887 /* Products */;
 			projectDirPath = "";
@@ -400,11 +433,12 @@
 				DEVELOPMENT_TEAM = 8A7BPPRYZD;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "L'application a besoin d'utiliser votre micro pour enregistrer de nouveau mots.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -428,11 +462,12 @@
 				DEVELOPMENT_TEAM = 8A7BPPRYZD;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "L'application a besoin d'utiliser votre micro pour enregistrer de nouveau mots.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -558,6 +593,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		84790F6A2E26985100BCB887 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		844C99462E26A1D2002DBB32 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 84790F6A2E26985100BCB887 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 84790F2D2E267B3C00BCB887 /* Project object */;
 }
