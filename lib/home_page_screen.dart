@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:tom_france_sacha/piano_screen.dart';
 
 class HomePageScreen extends StatelessWidget {
   const HomePageScreen({super.key});
@@ -24,7 +25,14 @@ class HomePageScreen extends StatelessWidget {
                 child: CardButton(
                   title: 'Jeux en musique',
                   icon: CupertinoIcons.music_note,
-                  onPressed: () {},
+                    onPressed: () {
+                    Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                      builder: (context) => const PianoScreen(),
+                      ),
+                    );
+                    },
                 ),
               ),
               Expanded(
