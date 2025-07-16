@@ -3,7 +3,7 @@
 
 @font-face {
   font-family: "Mochiy Pop One";
-  src: url("/fonts/MochiyPopOne-Regular.ttf") format("truetype");
+  src: url("/fonts/MochiyPopOne-Regular.woff2") format("woff2");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -12,7 +12,7 @@
 /* Poppins */
 @font-face {
   font-family: "Poppins";
-  src: url("/fonts/Poppins-Regular.ttf") format("truetype");
+  src: url("/fonts/Poppins-Regular.woff2") format("woff2");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
