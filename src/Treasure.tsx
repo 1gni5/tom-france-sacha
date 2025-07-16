@@ -95,20 +95,20 @@ export const Treasure = () => {
     const enabledTreasures: TreasureData[] = [
         {
             icon: songIcon,
-            title: "Une chanson",
-            audioSrc: "/treasures/song.mp3",
+            title: "Chantier chouchou",
+            audioSrc: "/treasures/chantier-chouchou.mp3",
             isEnabled: true
         },
         {
             icon: storyIcon,
-            title: "Une histoire",
-            audioSrc: "/treasures/story.mp3",
+            title: "Te regarder grandir",
+            audioSrc: "/treasures/te-regarder-grandir.mp3",
             isEnabled: true
         },
         {
             icon: comptineIcon,
-            title: "Une comptine",
-            audioSrc: "/treasures/comptine.mp3",
+            title: "Mon petit sacha",
+            audioSrc: "/treasures/mon-petit-sacha.mp3",
             isEnabled: true
         }
     ];
