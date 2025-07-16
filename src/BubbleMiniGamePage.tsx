@@ -168,7 +168,7 @@ export const BubbleMiniGamePage = () => {
         image: "",
         sound: "",
         color: COLORS[Math.floor(Math.random() * COLORS.length)],
-        size: 100 + Math.random() * 60,
+        size: 120 + Math.random() * 80,
         speed: 0.1 + Math.random(),
       };
     }
@@ -185,7 +185,7 @@ export const BubbleMiniGamePage = () => {
       image: content.image.name,
       sound: content.audio.name,
       color: COLORS[Math.floor(Math.random() * COLORS.length)],
-      size: 100 + Math.random() * 60,
+      size: 120 + Math.random() * 80,
       speed: 0.1 + Math.random(),
     };
   }, [isDataLoaded, wordData]);
@@ -277,8 +277,8 @@ export const BubbleMiniGamePage = () => {
       ctx.arc(bubble.x, bubble.y, radius - 3, 0, Math.PI * 2);
       ctx.stroke();
 
-      const imageSize = radius * 0.8;
-      const imageY = bubble.y - radius * 0.3;
+      const imageSize = radius * 1.2;
+      const imageY = bubble.y - radius * 0.4;
 
       ctx.fillStyle = bubble.color + '20';
       ctx.beginPath();
@@ -326,11 +326,14 @@ export const BubbleMiniGamePage = () => {
         ctx.stroke();
       }
 
-      ctx.font = 'bold 18px Arial';
+      ctx.font = 'bold 28px Arial';
       ctx.fillStyle = '#1f2937';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(bubble.text, bubble.x, bubble.y + radius * 0.4);
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#ffffff';
+      ctx.strokeText(bubble.text, bubble.x, bubble.y + radius * 0.5);
+      ctx.fillText(bubble.text, bubble.x, bubble.y + radius * 0.5);
 
       const glowGradient = ctx.createRadialGradient(
         bubble.x, bubble.y, 0,
@@ -404,7 +407,7 @@ export const BubbleMiniGamePage = () => {
       </div>
 
       <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10">
-        <div className="bg-white/90 backdrop-blur-sm rounded-lg px-4 py-2 shadow-lg max-w-xs">
+        <div className="bg-white/90 backdrop-blur-sm rounded-lg px-4 py-2 shadow-lg max-w-s">
           {!isDataLoaded ? (
             <span className="text-sm text-gray-800">Chargement des mots...</span>
           ) : (
