@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import minigameBackground from './assets/minigameBackground.jpg';
 import { getWords } from './lib/words';
@@ -45,11 +45,11 @@ export const BubbleMiniGamePage = () => {
   const audioCache = useRef<Map<string, HTMLAudioElement>>(new Map());
   const navigate = useNavigate();
   const [wordData, setWordData] = useState<WordData[]>([]);
-
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   // Load words from database and prepare assets
   // Timer state - 1.30 minutes = 90 seconds
-  const [timeLeft, setTimeLeft] = useState(5);
+  const [timeLeft, setTimeLeft] = useState(90);
   const [gameEnded, setGameEnded] = useState(false);
 
   // Play sound function
@@ -113,6 +113,9 @@ export const BubbleMiniGamePage = () => {
         });
 
         await Promise.all([...imagePromises, ...audioPromises]);
+
+        // Set data as loaded only after all assets are ready
+        setIsDataLoaded(true);
       } catch (error) {
         console.error('Error loading assets from database:', error);
       }
@@ -121,17 +124,6 @@ export const BubbleMiniGamePage = () => {
     loadAssets();
   }, []);
 
-
-  // Play sound function
-  const playSound = (soundName: string) => {
-    const audio = audioCache.current.get(soundName);
-    if (audio) {
-      audio.currentTime = 0;
-      audio.play().catch(error => {
-        console.error('Error playing sound:', error);
-      });
-    }
-  };
 
   // Timer countdown effect
   useEffect(() => {
@@ -153,8 +145,8 @@ export const BubbleMiniGamePage = () => {
   }, [gameEnded, navigate]);
 
   // Create a new bubble
-  const createBubble = (): Bubble => {
-    if (wordData.length === 0) {
+  const createBubble = useCallback((): Bubble => {
+    if (!isDataLoaded || wordData.length === 0) {
       return {
         id: `bubble-${Date.now()}-${Math.random()}`,
         x: Math.random() * (window.innerWidth - 100),
@@ -185,7 +177,7 @@ export const BubbleMiniGamePage = () => {
       size: 100 + Math.random() * 60,
       speed: 0.1 + Math.random(),
     };
-  };
+  }, [isDataLoaded, wordData]);
 
   // Handle canvas click
   const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
@@ -357,7 +349,8 @@ export const BubbleMiniGamePage = () => {
     const animate = (currentTime: number) => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      if (currentTime - lastSpawnTime.current > 2000 && bubbles.length < 5) {
+      // Only create bubbles if data is loaded
+      if (isDataLoaded && currentTime - lastSpawnTime.current > 2000 && bubbles.length < 5) {
         setBubbles(prev => [...prev, createBubble()]);
         lastSpawnTime.current = currentTime;
       }
@@ -383,7 +376,7 @@ export const BubbleMiniGamePage = () => {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [bubbles, wordData]);
+  }, [bubbles, wordData, isDataLoaded, createBubble]);
 
   return (
     <div
@@ -401,7 +394,11 @@ export const BubbleMiniGamePage = () => {
 
       <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10">
         <div className="bg-white/90 backdrop-blur-sm rounded-lg px-4 py-2 shadow-lg max-w-xs">
-          <span className="text-sm text-gray-800">Clique sur les bulles pour découvrir les mots !</span>
+          {!isDataLoaded ? (
+            <span className="text-sm text-gray-800">Chargement des mots...</span>
+          ) : (
+            <span className="text-sm text-gray-800">Clique sur les bulles pour découvrir les mots !</span>
+          )}
         </div>
       </div>
       {/* Timer */}
