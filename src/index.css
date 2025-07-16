@@ -116,6 +116,8 @@ body {
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-blue: var(--color-blue);
+  --font-mochiy-pop-one: "Mochiy Pop One", sans-serif;
+  --font-poppins: "Poppins", sans-serif;
 }
 
 .dark {
