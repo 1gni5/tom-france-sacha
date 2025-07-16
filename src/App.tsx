@@ -3,10 +3,7 @@ import { MenuPage } from "./MenuPage";
 
 function App() {
   return (
-    <>
-      <MenuPage></MenuPage>
-
-    </>
+      <MenuPage/>
   )
 }
 
