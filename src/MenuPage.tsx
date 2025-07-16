@@ -1,12 +1,14 @@
 import menuBackground from "./assets/menuBackground.jpg";
 import chestButton from "./assets/chestButton.png";
 import bookButton from "./assets/bookButton.png";
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 
 import { LevelCarousel } from "./LevelCarousel";
 import { UploadZipDialog } from "./components/UploadZipDialog";
-import { getCategories, getWords } from "./lib/db";
+import { getCategories, getWords, type Category } from "./lib/db";
 import { useNavigate } from "react-router";
+import { cacheFile } from "./lib/cache";
+import victoryVideo from "./assets/victory.mp4";
 
 export function updateApplication() {
   if (navigator.onLine) location.reload();
@@ -20,6 +22,15 @@ export const MenuPage = () => {
   useEffect(() => {
     const loadProgress = async () => {
       try {
+        if (navigator.onLine) {
+          await Promise.all([
+            cacheFile(victoryVideo, 'FileCacheDB', 'files', 'victoryVideo'),
+            cacheFile('/treasures/chantier-chouchou.mp3', 'FileCacheDB', 'files', '/treasures/chantier-chouchou.mp3'),
+            cacheFile('/treasures/te-regarder-grandir.mp3', 'FileCacheDB', 'files', '/treasures/te-regarder-grandir.mp3'),
+            cacheFile('/treasures/mon-petit-sacha.mp3', 'FileCacheDB', 'files', '/treasures/mon-petit-sacha.mp3'),
+          ]);
+        }
+
         const categories = await getCategories();
         const words = await getWords();
 
@@ -43,6 +54,34 @@ export const MenuPage = () => {
 
     updateApplication();
   };
+
+  // Load progress, word count, and cache video
+  useEffect(() => {
+    const loadProgressAndCacheVideo = async () => {
+      try {
+        // Cache the victory video
+        if (navigator.onLine) {
+          await cacheFile(victoryVideo, 'FileCacheDB', 'files', 'victoryVideo');
+        }
+
+        // Load progress from database
+        const categories: Category[] = await getCategories();
+        const words: unknown[] = await getWords();
+
+        // Calculate progress percentage
+        const completedCategories = categories.filter(cat => cat.isCompleted).length;
+        const totalCategories = categories.length;
+        const percentage = totalCategories > 0 ? Math.round((completedCategories / totalCategories) * 100) : 0;
+
+        setProgressPercentage(percentage);
+        setTotalWords(words.length);
+      } catch (error: any) {
+        console.error('Error loading progress or caching video:', error);
+      }
+    };
+
+    loadProgressAndCacheVideo();
+  }, []);
 
   const navigate = useNavigate();
 

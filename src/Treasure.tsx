@@ -4,8 +4,9 @@ import songIcon from './assets/songIcon.svg';
 import comptineIcon from './assets/comptineIcon.svg';
 import storyIcon from './assets/storyIcon.svg';
 import backButton from './assets/leftButton.png';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { getCachedFile } from './lib/cache';
 interface TreasureCardProps {
     icon: string;
     title: string;
@@ -13,7 +14,6 @@ interface TreasureCardProps {
     isEnabled?: boolean;
     onClick?: () => void;
 }
-
 const TreasureCard: React.FC<TreasureCardProps> = ({
     icon,
     title,
@@ -22,12 +22,29 @@ const TreasureCard: React.FC<TreasureCardProps> = ({
     onClick
 }) => {
     const audioRef = useRef<HTMLAudioElement>(null);
-    const [isPlaying, setIsPlaying] = useState(false);
+    const [isPlaying, setIsPlaying] = useState<boolean>(false);
+    const [cachedAudioSrc, setCachedAudioSrc] = useState<string | undefined>(undefined);
+
+    useEffect(() => {
+        const cacheAudio = async () => {
+            if (audioSrc && navigator.onLine) {
+                try {
+                    const cachedSrc = await getCachedFile(audioSrc, 'FileCacheDB', 'files', audioSrc);
+                    setCachedAudioSrc(cachedSrc);
+                } catch (error: any) {
+                    console.error(`Error caching audio ${audioSrc}:`, error);
+                    setCachedAudioSrc(audioSrc); // Fallback to original src if caching fails
+                }
+            }
+        };
+
+        cacheAudio();
+    }, [audioSrc]);
 
     const handleClick = () => {
         if (!isEnabled) return;
 
-        if (audioSrc && audioRef.current) {
+        if (cachedAudioSrc && audioRef.current) {
             if (isPlaying) {
                 audioRef.current.pause();
                 audioRef.current.currentTime = 0;
@@ -71,18 +88,19 @@ const TreasureCard: React.FC<TreasureCardProps> = ({
                 {title}
                 {isPlaying && ' 🎵'}
             </p>
-            {audioSrc && (
+            {cachedAudioSrc && (
                 <audio
                     ref={audioRef}
                     onEnded={handleAudioEnd}
                     preload="metadata"
                 >
-                    <source src={audioSrc} type="audio/mpeg" />
+                    <source src={cachedAudioSrc} type="audio/mpeg" />
                 </audio>
             )}
         </div>
     );
 };
+
 interface TreasureData {
     icon: string;
     title: string;
@@ -91,7 +109,7 @@ interface TreasureData {
 }
 
 export const Treasure = () => {
-        const navigate = useNavigate();
+    const navigate = useNavigate();
 
     const enabledTreasures: TreasureData[] = [
         {
