@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LevelCard } from "./LevelCard";
-import jungleBackground from "./assets/jungleBackground.png";
+import jungleBackground from "./assets/jungleBackground.jpeg";
 import transportBackground from "./assets/transportBackground.jpg";
 import meteoBackground from "./assets/meteoBackground.jpg";
 
