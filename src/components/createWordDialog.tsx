@@ -1,80 +1,191 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { addWord } from "@/lib/words"
-import { useForm } from "react-hook-form"
-import settingsButton from "@/assets/settingsButton.png"
-import { UploadZipDialog } from "./UploadZipDialog"
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { type Category, getCategories, addWord } from "@/lib/db";
+import { useState, useEffect } from "react";
 
-type FormValues = {
-  word: string
-  audio: FileList
-  image: FileList
+interface FormData {
+    name: string;
+    image: FileList;
+    audio: FileList;
+    category: string;
 }
 
 export function CreateWordDialog() {
-  const { register, handleSubmit, reset } = useForm<FormValues>()
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [fetchError, setFetchError] = useState<string | null>(null);
 
-  const onSubmit = async (data: FormValues) => {
-    await addWord(data.word, data.audio[0], data.image[0]);
-    reset()
-  }
+    // Define form schema with zod
+    const schema = z.object({
+        name: z.string().min(1, "Le mot est requis"),
+        image: z
+            .instanceof(FileList)
+            .refine((files) => files?.length > 0, "Une image est requise"),
+        audio: z
+            .instanceof(FileList)
+            .refine((files) => files?.length > 0, "Un fichier audio est requis"),
+        category: z.string().min(1, "La catégorie est requise"),
+    });
 
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        {/* <Button>Open Dialog</Button> */}
-        <button className="p-4 bg-gray-500 text-white rounded-full shadow-lg hover:bg-gray-600">
-          <img src={settingsButton} alt="Settings Icon" className="w-6 h-6" />
-        </button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Gestion des mots</DialogTitle>
-        </DialogHeader>
 
-        <div className="grid gap-4">
-          {/* Import ZIP Section */}
-          <div className="border rounded-lg p-4">
-            <h3 className="font-medium mb-2">Import par ZIP</h3>
-            <p className="text-sm text-gray-600 mb-3">
-              Importez plusieurs niveaux avec leurs mots depuis un fichier ZIP
-            </p>
-            <UploadZipDialog />
-          </div>
+    // Initialize useForm with schema and default values
+    const form = useForm<FormData>({
+        resolver: zodResolver(schema),
+        defaultValues: {
+            name: "",
+            image: undefined,
+            audio: undefined,
+            category: "",
+        },
+    });
 
-          {/* Manual Word Addition Section */}
-          <div className="border rounded-lg p-4">
-            <h3 className="font-medium mb-4">Ajouter un mot manuellement</h3>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="grid gap-4">
-                <div className="grid gap-3">
-                  <Label htmlFor="text-1">Mot</Label>
-                  <Input id="text-1" {...register("word", { required: true })} />
-                </div>
-                <div className="grid gap-4">
-                  <Label htmlFor="audio-1">Audio</Label>
-                  <Input id="audio-1" type="file" {...register("audio", { required: true })} />
-                </div>
-                <div className="grid gap-4">
-                  <Label htmlFor="image-1">Image</Label>
-                  <Input id="image-1" type="file" {...register("image", { required: true })} />
-                </div>
-              </div>
-              <div className="mt-4">
-                <Button type="submit">Ajouter</Button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
-  )
+    // Fetch categories
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const fetchedCategories = await getCategories();
+                setCategories(fetchedCategories);
+            } catch (error) {
+                setFetchError("Erreur lors du chargement des catégories");
+            }
+        };
+        fetchCategories();
+    }, []);
+
+    // Handle form submission
+    const onSubmit = async (data: FormData) => {
+        try {
+            console.log("Form submitted:", data);
+            await addWord(data.name, data.image[0], data.audio[0], categories.find(cat => cat.id === parseInt(data.category))?.id || null);
+            form.reset(); // Reset form on successful submission
+        } catch (error) {
+            console.error("Erreur lors de l'ajout du mot:", error);
+            form.setError("root", { message: "Erreur lors de l'ajout du mot" });
+        }
+    };
+
+    return (
+        <Dialog>
+            <DialogTrigger asChild>
+                <Button variant="outline">Créer un mot</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle>Créer un mot</DialogTitle>
+                    <DialogDescription>
+                        Chaque mot représente un élément de jeu pour Sacha.
+                    </DialogDescription>
+                </DialogHeader>
+                {fetchError && <p className="text-red-500">{fetchError}</p>}
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
+                        <FormField
+                            control={form.control}
+                            name="name"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Mot</FormLabel>
+                                    <FormControl>
+                                        <Input id="name-1" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="image"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Image</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            id="image-1"
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={(e) => field.onChange(e.target.files)}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="audio"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Audio</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            id="audio-1"
+                                            type="file"
+                                            accept="audio/*"
+                                            onChange={(e) => field.onChange(e.target.files)}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="category"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Catégorie</FormLabel>
+                                    <FormControl>
+                                        <select
+                                            id="category-1"
+                                            {...field}
+                                            className="w-full border rounded-md p-2"
+                                        >
+                                            <option value="">Sélectionner une catégorie</option>
+                                            {categories.map((category) => (
+                                                <option key={category.id} value={category.id}>
+                                                    {category.title}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <DialogFooter>
+                            <DialogClose asChild>
+                                <Button
+                                    variant="outline"
+                                    onClick={() => form.reset()}
+                                >
+                                    Annuler
+                                </Button>
+                            </DialogClose>
+                            <Button type="submit">Créer</Button>
+                        </DialogFooter>
+                    </form>
+                </Form>
+            </DialogContent>
+        </Dialog>
+    );
 }
