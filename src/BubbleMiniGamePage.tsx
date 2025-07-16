@@ -46,7 +46,25 @@ export const BubbleMiniGamePage = () => {
   const navigate = useNavigate();
   const [wordData, setWordData] = useState<WordData[]>([]);
 
+
   // Load words from database and prepare assets
+  // Timer state - 1.30 minutes = 90 seconds
+  const [timeLeft, setTimeLeft] = useState(90);
+  const [gameEnded, setGameEnded] = useState(false);
+
+  // Play sound function
+  const playSound = (soundUrl: string) => {
+    const audio = audioCache.current.get(soundUrl);
+    if (audio) {
+      // Reset the audio to start and play
+      audio.currentTime = 0;
+      audio.play().catch(error => {
+        console.error('Error playing sound:', error);
+      });
+    }
+  };
+
+  // Load and cache images and audio
   useEffect(() => {
     const loadAssets = async () => {
       try {
@@ -103,6 +121,7 @@ export const BubbleMiniGamePage = () => {
     loadAssets();
   }, []);
 
+
   // Play sound function
   const playSound = (soundName: string) => {
     const audio = audioCache.current.get(soundName);
@@ -113,6 +132,25 @@ export const BubbleMiniGamePage = () => {
       });
     }
   };
+
+  // Timer countdown effect
+  useEffect(() => {
+    if (gameEnded) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          setGameEnded(true);
+          // Navigate to victory page when timer ends
+          navigate('/victory');
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [gameEnded, navigate]);
 
   // Create a new bubble
   const createBubble = (): Bubble => {
@@ -362,10 +400,20 @@ export const BubbleMiniGamePage = () => {
       </div>
 
       <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10">
-        <div className="bg-white/90 backdrop-blur-sm rounded-lg px-4 py-2 shadow-lg max-w-s">
+        <div className="bg-white/90 backdrop-blur-sm rounded-lg px-4 py-2 shadow-lg max-w-xs">
           <span className="text-sm text-gray-800">Clique sur les bulles pour découvrir les mots !</span>
         </div>
       </div>
+      {/* Timer */}
+      <div className="absolute top-4 right-4 z-10">
+        <div className="bg-white/90 backdrop-blur-sm rounded-lg px-4 py-2 shadow-lg">
+          <span className="text-sm text-gray-800 font-medium">
+            ⏰ {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
+          </span>
+        </div>
+      </div>
+
+      {/* Canvas */}
 
       <canvas
         ref={canvasRef}
