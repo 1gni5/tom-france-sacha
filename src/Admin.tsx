@@ -2,9 +2,6 @@ import { useState, useEffect } from 'react';
 import type { ChangeEvent } from 'react';
 import { addCategory, getCategories, deleteCategory, updateCategory, addWord, getWords, deleteWord } from '@/lib/db';
 import type { Category, Word } from '@/lib/db';
-import { CreateCategoryDialog } from './components/CreateCategoryDialog';
-import { CreateWordDialog } from './components/createWordDialog';
-
 
 // ShadCN-inspired components
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -126,9 +123,9 @@ const Admin: React.FC = () => {
     return (
         <div className="bg-gradient-to-t to-[#cad0ffa7]  from-white flex flex-col items-center justify-center p-8 min-h-screen">
             <h1 className="text-[52px] text-[#120047] font-bold font-poppins">Admin Dashboard</h1>
-            <CreateCategoryDialog />
-            <CreateWordDialog />
-            {/* <Card className="mb-4">
+            {/* <CreateCategoryDialog />
+            <CreateWordDialog /> */}
+            <Card className="mb-4">
                 <CardHeader>Manage Categories</CardHeader>
                 <CardContent>
                     <div className="flex gap-4 mb-4">
@@ -237,13 +234,9 @@ const Admin: React.FC = () => {
                         ))}
                     </div>
                 </CardContent>
-            </Card> */}
+            </Card>
         </div>
     );
 };
 
 export default Admin;
-
-function useQuery(arg0: { queryKey: string[]; queryFn: () => Promise<any>; }): { isPending: any; error: any; data: any; isFetching: any; } {
-    throw new Error('Function not implemented.');
-}

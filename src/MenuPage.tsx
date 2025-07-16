@@ -1,11 +1,12 @@
 import menuBackground from "./assets/menuBackground.jpg";
 import chestButton from "./assets/chestButton.png";
 import bookButton from "./assets/bookButton.png";
+import { useState, useEffect, use } from "react";
 
-import { Link } from 'react-router-dom';
 import { LevelCarousel } from "./LevelCarousel";
-
-import { useState, useEffect } from "react";
+import { UploadZipDialog } from "./components/UploadZipDialog";
+import { getCategories, getWords } from "./lib/db";
+import { useNavigate } from "react-router";
 
 export function updateApplication() {
   if (navigator.onLine) location.reload();
@@ -43,6 +44,8 @@ export const MenuPage = () => {
     updateApplication();
   };
 
+  const navigate = useNavigate();
+
   return (
     <div
       className="min-h-screen bg-cover bg-center bg-no-repeat"
@@ -50,9 +53,9 @@ export const MenuPage = () => {
     >
       <div className="top-4 left-0 right-0 flex items-center justify-between p-4">
         {/* Left button with image */}
-        <Link to="/treasure">
+        <button onClick={() => navigate('/treasure')}>
           <img src={chestButton} alt="Chest Icon" className="h-12 w-auto" />
-        </Link>
+        </button>
 
         {/* Center progress bar */}
         <div
@@ -130,6 +133,11 @@ export const MenuPage = () => {
             </span>
           </div>
         </div>
+      </div>
+
+      {/* Stick on bottom right button with icon and background */}
+      <div className="fixed bottom-4 right-4">
+        <UploadZipDialog />
       </div>
     </div>
   );

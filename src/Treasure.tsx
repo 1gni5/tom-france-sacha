@@ -1,5 +1,3 @@
-
-import { ArrowLeft } from 'lucide-react';
 import minigameBackground from './assets/minigameBackground.jpg';
 import chestImage from './assets/chestButton.png';
 import songIcon from './assets/songIcon.svg';
@@ -7,6 +5,7 @@ import comptineIcon from './assets/comptineIcon.svg';
 import storyIcon from './assets/storyIcon.svg';
 import backButton from './assets/leftButton.png';
 import { useRef, useState } from 'react';
+import { useNavigate } from 'react-router';
 interface TreasureCardProps {
     icon: string;
     title: string;
@@ -52,12 +51,12 @@ const TreasureCard: React.FC<TreasureCardProps> = ({
     ${isEnabled
             ? 'border-[#8FCBBC] bg-white cursor-pointer hover:shadow-lg transition-shadow'
             : 'border-[#676767] bg-gray-300 cursor-not-allowed'
-        } 
+        }
     p-4 border-4 rounded-xl flex flex-col items-center justify-center gap-4
   `;
 
     const textClasses = `
-    ${isEnabled ? 'text-black' : 'text-[#676767]'} 
+    ${isEnabled ? 'text-black' : 'text-[#676767]'}
     text-lg font-poppins font-semibold
   `;
 
@@ -92,6 +91,8 @@ interface TreasureData {
 }
 
 export const Treasure = () => {
+        const navigate = useNavigate();
+
     const enabledTreasures: TreasureData[] = [
         {
             icon: songIcon,
@@ -128,7 +129,7 @@ export const Treasure = () => {
         className="h-screen w-screen bg-cover bg-center relative overflow-hidden flex flex-col py-8 px-16 gap-14"
     >
         <div className='flex items-center'>
-            <button className=''>
+            <button className='' onClick={() => navigate('/')}>
                 <img src={backButton} alt="Back" className='size-16' />
             </button>
             <h1 className='text-4xl font-bold m-4 font-mochiy-pop-one text-[#03302D] w-full text-center'>

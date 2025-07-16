@@ -19,7 +19,7 @@ export function UploadZipDialog() {
 
   const processZipFile = async (file: File) => {
     setIsUploading(true)
-    setUploadProgress("Extracting zip file...")
+    setUploadProgress("Extraction du fichier ZIP...")
 
     try {
       const zip = new JSZip()
@@ -39,7 +39,7 @@ export function UploadZipDialog() {
       const totalLevels = directories.size
 
       for (const dirName of directories) {
-        setUploadProgress(`Processing level: ${dirName} (${processedLevels + 1}/${totalLevels})`)
+        setUploadProgress(`Traitement du niveau : ${dirName} (${processedLevels + 1}/${totalLevels})`)
 
         // Find background image for this level
         let backgroundFile: File | null = null
@@ -113,16 +113,16 @@ export function UploadZipDialog() {
             }
           }
 
-          setUploadProgress(`✅ Level "${dirName}" completed: ${wordsCreated} words added`)
+          setUploadProgress(`✅ Niveau "${dirName}" terminé : ${wordsCreated} mots ajoutés`)
         } else {
-          setUploadProgress(`⚠️ Level "${dirName}" skipped: no background image found`)
+          setUploadProgress(`⚠️ Niveau "${dirName}" ignoré : aucune image de fond trouvée`)
           console.warn(`No background image found for level: ${dirName}`)
         }
 
         processedLevels++
       }
 
-      setUploadProgress(`🎉 Import completed! ${totalLevels} levels processed successfully`)
+      setUploadProgress(`🎉 Import terminé ! ${totalLevels} niveaux traités avec succès`)
 
       // Reset form after a delay
       setTimeout(() => {
@@ -135,7 +135,7 @@ export function UploadZipDialog() {
 
     } catch (error) {
       console.error('Error processing zip file:', error)
-      setUploadProgress(`❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      setUploadProgress(`❌ Erreur : ${error instanceof Error ? error.message : 'Erreur inconnue'}`)
       setIsUploading(false)
     }
   }
@@ -145,7 +145,7 @@ export function UploadZipDialog() {
     if (file && file.type === 'application/zip') {
       await processZipFile(file)
     } else {
-      alert('Please select a valid ZIP file')
+      alert('Veuillez sélectionner un fichier ZIP valide')
     }
   }
 
@@ -161,7 +161,7 @@ export function UploadZipDialog() {
       }
       await processZipFile(file)
     } else {
-      alert('Please drop a valid ZIP file')
+      alert('Veuillez déposer un fichier ZIP valide')
     }
   }
 
@@ -173,29 +173,29 @@ export function UploadZipDialog() {
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="outline" className="ml-2">
-          Import ZIP
+          Importer ZIP
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Import Levels from ZIP</DialogTitle>
+          <DialogTitle>Importer des niveaux depuis un ZIP</DialogTitle>
         </DialogHeader>
 
         <div className="grid gap-4">
           <div className="text-sm text-gray-600">
-            <p>Upload a ZIP file containing levels with the following structure:</p>
+            <p>Téléchargez un fichier ZIP contenant des niveaux avec la structure suivante :</p>
             <pre className="mt-2 p-2 bg-gray-100 rounded text-xs">
 {`level1/
 ├── background.jpg
-├── cat.jpg
-├── cat.mp3
-├── dog.jpg
-└── dog.mp3`}
+├── chat.jpg
+├── chat.mp3
+├── chien.jpg
+└── chien.mp3`}
             </pre>
           </div>
 
           <div className="grid gap-3">
-            <Label htmlFor="zip-upload">ZIP File</Label>
+            <Label htmlFor="zip-upload">Fichier ZIP</Label>
             <div
               className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
                 isUploading ? 'border-blue-300 bg-blue-50' : 'border-gray-300 hover:border-gray-400'
@@ -205,13 +205,13 @@ export function UploadZipDialog() {
             >
               {isUploading ? (
                 <div>
-                  <div className="text-blue-600 font-medium">Processing...</div>
+                  <div className="text-blue-600 font-medium">Traitement en cours...</div>
                   <div className="text-sm text-gray-600 mt-1">{uploadProgress}</div>
                 </div>
               ) : (
                 <div>
                   <div className="text-gray-600">
-                    Drag and drop a ZIP file here, or click to select
+                    Glissez-déposez un fichier ZIP ici, ou cliquez pour sélectionner
                   </div>
                   <Input
                     ref={fileInputRef}
