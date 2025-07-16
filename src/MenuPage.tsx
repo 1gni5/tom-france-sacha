@@ -4,10 +4,15 @@ import bookButton from "./assets/bookButton.png";
 import settingsButton from "./assets/settingsButton.png";
 import { LevelCarousel } from "./LevelCarousel";
 
+export function updateApplication() {
+  if (navigator.onLine) location.reload();
+}
+
 export const MenuPage = () => {
   const handlePlayLevel = (levelId: number) => {
     console.log(`Playing level ${levelId}`);
-    // Add your navigation logic here
+
+    updateApplication();
   };
 
   return (

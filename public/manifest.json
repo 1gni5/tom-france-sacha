@@ -1,9 +1,9 @@
 {
-    "name": "Audio File Storage PWA",
-    "short_name": "Audio PWA",
+    "name": "Hippomots",
+    "short_name": "Hippomots",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "#f3f4f6",
+    "background_color": "#ffffff",
     "theme_color": "#2563eb",
     "icons": [
         {

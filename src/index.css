@@ -1,7 +1,22 @@
-@import url("https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
+
+@font-face {
+  font-family: "Mochiy Pop One";
+  src: url("/fonts/MochiyPopOne-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Poppins */
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/Poppins-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 
 .mochiy-pop-one-regular {
   font-family: "Mochiy Pop One", sans-serif;
