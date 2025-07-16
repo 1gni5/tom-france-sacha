@@ -1,8 +1,9 @@
 import menuBackground from "./assets/menuBackground.jpg";
 import chestButton from "./assets/chestButton.png";
 import bookButton from "./assets/bookButton.png";
-import settingsButton from "./assets/settingsButton.png";
+
 import { LevelCarousel } from "./LevelCarousel";
+import { CreateWordDialog } from "./components/createWordDialog";
 
 export function updateApplication() {
   if (navigator.onLine) location.reload();
@@ -106,9 +107,7 @@ export const MenuPage = () => {
 
       {/* Stick on bottom right button with icon and background */}
       <div className="fixed bottom-4 right-4">
-        <button className="p-4 bg-gray-500 text-white rounded-full shadow-lg hover:bg-gray-600">
-          <img src={settingsButton} alt="Settings Icon" className="w-6 h-6" />
-        </button>
+        <CreateWordDialog />
       </div>
     </div>
   );

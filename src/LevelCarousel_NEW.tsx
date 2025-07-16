@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { LevelCard } from "./LevelCard";
-import jungleBackground from "./assets/jungleBackground.png";
+import jungleBackground from "./assets/jungleBackground.jpeg";
 
 interface Level {
   id: number;

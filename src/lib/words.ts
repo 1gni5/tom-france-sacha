@@ -8,7 +8,7 @@ async function getWordsDatabase() {
     });
 }
 
-export async function addWord(word: string, audio: File) {
+export async function addWord(word: string, audio: File, image: File) {
     const db = await getWordsDatabase();
     const transaction = db.transaction('files', 'readwrite');
     const store = transaction.objectStore('files');
@@ -16,6 +16,7 @@ export async function addWord(word: string, audio: File) {
     const fileData = {
         text: word,
         audio,
+        image,
         createdAt: new Date().toISOString(),
     };
 
