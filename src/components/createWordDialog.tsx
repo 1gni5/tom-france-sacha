@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -11,7 +10,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { addWord } from "@/lib/words"
 import { useForm } from "react-hook-form"
-import settingsButton from "@/assets/settingsButton.png";
+import settingsButton from "@/assets/settingsButton.png"
+import { UploadZipDialog } from "./UploadZipDialog"
 
 type FormValues = {
   word: string
@@ -37,28 +37,43 @@ export function CreateWordDialog() {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Ajouter un mot</DialogTitle>
-
+          <DialogTitle>Gestion des mots</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="grid gap-4">
-            <div className="grid gap-3">
-              <Label htmlFor="text-1">Mot</Label>
-              <Input id="text-1" {...register("word", { required: true })} />
-            </div>
-            <div className="grid gap-4">
-              <Label htmlFor="audio-1">Audio</Label>
-              <Input id="audio-1" type="file" {...register("audio", { required: true })} />
-            </div>
-            <div className="grid gap-4">
-              <Label htmlFor="image-1">Image</Label>
-              <Input id="image-1" type="file" {...register("image", { required: true })} />
-            </div>
+
+        <div className="grid gap-4">
+          {/* Import ZIP Section */}
+          <div className="border rounded-lg p-4">
+            <h3 className="font-medium mb-2">Import par ZIP</h3>
+            <p className="text-sm text-gray-600 mb-3">
+              Importez plusieurs niveaux avec leurs mots depuis un fichier ZIP
+            </p>
+            <UploadZipDialog />
           </div>
-          <DialogFooter className="mt-4">
-            <Button type="submit">Ajouter</Button>
-          </DialogFooter>
-        </form>
+
+          {/* Manual Word Addition Section */}
+          <div className="border rounded-lg p-4">
+            <h3 className="font-medium mb-4">Ajouter un mot manuellement</h3>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="grid gap-4">
+                <div className="grid gap-3">
+                  <Label htmlFor="text-1">Mot</Label>
+                  <Input id="text-1" {...register("word", { required: true })} />
+                </div>
+                <div className="grid gap-4">
+                  <Label htmlFor="audio-1">Audio</Label>
+                  <Input id="audio-1" type="file" {...register("audio", { required: true })} />
+                </div>
+                <div className="grid gap-4">
+                  <Label htmlFor="image-1">Image</Label>
+                  <Input id="image-1" type="file" {...register("image", { required: true })} />
+                </div>
+              </div>
+              <div className="mt-4">
+                <Button type="submit">Ajouter</Button>
+              </div>
+            </form>
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   )

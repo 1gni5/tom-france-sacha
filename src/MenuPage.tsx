@@ -4,6 +4,7 @@ import bookButton from "./assets/bookButton.png";
 
 import { LevelCarousel } from "./LevelCarousel";
 import { CreateWordDialog } from "./components/createWordDialog";
+import { UploadZipDialog } from "./components/UploadZipDialog";
 
 export function updateApplication() {
   if (navigator.onLine) location.reload();
@@ -108,6 +109,7 @@ export const MenuPage = () => {
       {/* Stick on bottom right button with icon and background */}
       <div className="fixed bottom-4 right-4">
         <CreateWordDialog />
+        <UploadZipDialog />
       </div>
     </div>
   );
