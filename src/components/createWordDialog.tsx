@@ -24,7 +24,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { type Category, getCategories, addWord } from "@/lib/db";
 import { useState, useEffect } from "react";
 
-
 interface FormData {
     name: string;
     image: FileList;
@@ -47,6 +46,7 @@ export function CreateWordDialog() {
             .refine((files) => files?.length > 0, "Un fichier audio est requis"),
         category: z.string().min(1, "La catégorie est requise"),
     });
+
 
     // Initialize useForm with schema and default values
     const form = useForm<FormData>({

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import minigameBackground from './assets/minigameBackground.jpg';
-import { getWords } from './lib/words';
+import { getWords, type Word, markCategoryCompleted } from './lib/db';
 
 interface Bubble {
   id: string;
@@ -15,14 +15,6 @@ interface Bubble {
   size: number;
   speed: number;
   baseX: number;
-}
-
-interface WordData {
-  id: number;
-  text: string;
-  image: File;
-  audio: File;
-  createdAt: string;
 }
 
 const COLORS = [
@@ -44,7 +36,8 @@ export const BubbleMiniGamePage = () => {
   const imageCache = useRef<Map<string, HTMLImageElement>>(new Map());
   const audioCache = useRef<Map<string, HTMLAudioElement>>(new Map());
   const navigate = useNavigate();
-  const [wordData, setWordData] = useState<WordData[]>([]);
+  const location = useLocation();
+  const [wordData, setWordData] = useState<Word[]>([]);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   // Load words from database and prepare assets
@@ -68,9 +61,18 @@ export const BubbleMiniGamePage = () => {
   useEffect(() => {
     const loadAssets = async () => {
       try {
-        // Fetch words from database
-        const words = await getWords();
-        setWordData(words);
+        // Get categoryId from navigation state
+        const categoryId = location.state?.categoryId || null;
+
+        // Fetch words from database for the specific category
+        const words = await getWords(categoryId);
+
+        // Filter out words without id (shouldn't happen but for type safety)
+        const validWords = words.filter((word): word is Word & { id: number } =>
+          typeof word.id === 'number'
+        );
+
+        setWordData(validWords);
 
         // Convert Files to base64 and load assets
         const imagePromises = words.map(async (word) => {
@@ -122,7 +124,7 @@ export const BubbleMiniGamePage = () => {
     };
 
     loadAssets();
-  }, []);
+  }, [location.state?.categoryId]);
 
 
   // Timer countdown effect
@@ -133,6 +135,15 @@ export const BubbleMiniGamePage = () => {
       setTimeLeft(prev => {
         if (prev <= 1) {
           setGameEnded(true);
+
+          // Mark category as completed if there's a categoryId
+          const categoryId = location.state?.categoryId;
+          if (categoryId) {
+            markCategoryCompleted(categoryId).catch(error => {
+              console.error('Error marking category as completed:', error);
+            });
+          }
+
           // Navigate to victory page when timer ends
           navigate('/victory');
           return 0;
@@ -142,7 +153,7 @@ export const BubbleMiniGamePage = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [gameEnded, navigate]);
+  }, [gameEnded, navigate, location.state?.categoryId]);
 
   // Create a new bubble
   const createBubble = useCallback((): Bubble => {

@@ -1,14 +1,42 @@
 import menuBackground from "./assets/menuBackground.jpg";
 import chestButton from "./assets/chestButton.png";
 import bookButton from "./assets/bookButton.png";
+
 import { Link } from 'react-router-dom';
 import { LevelCarousel } from "./LevelCarousel";
+
+import { useState, useEffect } from "react";
 
 export function updateApplication() {
   if (navigator.onLine) location.reload();
 }
 
 export const MenuPage = () => {
+  const [progressPercentage, setProgressPercentage] = useState(0);
+  const [totalWords, setTotalWords] = useState(0);
+
+  // Load progress and word count from database
+  useEffect(() => {
+    const loadProgress = async () => {
+      try {
+        const categories = await getCategories();
+        const words = await getWords();
+
+        // Calculate progress percentage
+        const completedCategories = categories.filter(cat => cat.isCompleted).length;
+        const totalCategories = categories.length;
+        const percentage = totalCategories > 0 ? Math.round((completedCategories / totalCategories) * 100) : 0;
+
+        setProgressPercentage(percentage);
+        setTotalWords(words.length);
+      } catch (error) {
+        console.error('Error loading progress:', error);
+      }
+    };
+
+    loadProgress();
+  }, []);
+
   const handlePlayLevel = (levelId: number) => {
     console.log(`Playing level ${levelId}`);
 
@@ -53,7 +81,7 @@ export const MenuPage = () => {
             <div
               className="h-full relative"
               style={{
-                width: "60%",
+                width: `${progressPercentage}%`,
                 backgroundColor: "#03302D",
                 borderRadius: "94px",
                 transition: "width 0.3s ease-out",
@@ -61,7 +89,7 @@ export const MenuPage = () => {
               }}
             />
           </div>
-          <span className="text-sm font-medium">60%</span>
+          <span className="text-sm font-medium">{progressPercentage}%</span>
         </div>
 
         {/* Right button with image */}
@@ -85,7 +113,7 @@ export const MenuPage = () => {
           style={{ backgroundColor: "#ADDBCE" }}
         >
           <span className="text-4xl font-bold" style={{ color: "#03302D" }}>
-            12
+            {totalWords}
           </span>
           <div className="flex flex-col  ">
             <span
