@@ -1,7 +1,6 @@
 import { getWords } from "@/lib/words";
 import { useState, useEffect, useRef } from "react";
 import React from "react";
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "./ui/table"
 import { Button } from "./ui/button";
 import { Pause, Play } from "lucide-react";
 interface WordAudioPlayerProps {
