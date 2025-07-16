@@ -6,6 +6,7 @@ export interface Category {
     title: string;
     picture: File;
     createdAt: string;
+    isCompleted?: boolean;
 }
 
 export interface Word {
@@ -39,6 +40,7 @@ export async function addCategory(title: string, picture: File): Promise<number>
         title,
         picture,
         createdAt: new Date().toISOString(),
+        isCompleted: false,
     });
     await transaction.done;
     return id as number;
@@ -70,7 +72,33 @@ export async function updateCategory(id: number, title: string, picture: File): 
     const db = await getDatabase();
     const transaction = db.transaction('categories', 'readwrite');
     const store = transaction.objectStore('categories');
-    await store.put({ id, title, picture, createdAt: new Date().toISOString() });
+    
+    // Get existing category to preserve isCompleted flag
+    const existingCategory = await store.get(id);
+    
+    await store.put({ 
+        id, 
+        title, 
+        picture, 
+        createdAt: new Date().toISOString(),
+        isCompleted: existingCategory?.isCompleted || false
+    });
+    await transaction.done;
+}
+
+export async function markCategoryCompleted(id: number, completed: boolean = true): Promise<void> {
+    const db = await getDatabase();
+    const transaction = db.transaction('categories', 'readwrite');
+    const store = transaction.objectStore('categories');
+    
+    // Get existing category
+    const existingCategory = await store.get(id);
+    if (existingCategory) {
+        await store.put({ 
+            ...existingCategory,
+            isCompleted: completed
+        });
+    }
     await transaction.done;
 }
 

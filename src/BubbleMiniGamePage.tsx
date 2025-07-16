@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import minigameBackground from './assets/minigameBackground.jpg';
-import { getWords, type Word } from './lib/db';
+import { getWords, type Word, markCategoryCompleted } from './lib/db';
 
 interface Bubble {
   id: string;
@@ -135,6 +135,15 @@ export const BubbleMiniGamePage = () => {
       setTimeLeft(prev => {
         if (prev <= 1) {
           setGameEnded(true);
+          
+          // Mark category as completed if there's a categoryId
+          const categoryId = location.state?.categoryId;
+          if (categoryId) {
+            markCategoryCompleted(categoryId).catch(error => {
+              console.error('Error marking category as completed:', error);
+            });
+          }
+          
           // Navigate to victory page when timer ends
           navigate('/victory');
           return 0;
@@ -144,7 +153,7 @@ export const BubbleMiniGamePage = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [gameEnded, navigate]);
+  }, [gameEnded, navigate, location.state?.categoryId]);
 
   // Create a new bubble
   const createBubble = useCallback((): Bubble => {
