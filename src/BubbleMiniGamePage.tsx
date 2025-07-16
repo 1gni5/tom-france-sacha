@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import minigameBackground from './assets/minigameBackground.jpg';
 import crocodile from './assets/animals/crocodile.jpg';
 import hippopotame from './assets/animals/hippopotame.jpg';
@@ -56,6 +57,7 @@ export const BubbleMiniGamePage = () => {
   const lastSpawnTime = useRef<number>(0);
   const imageCache = useRef<Map<string, HTMLImageElement>>(new Map());
   const audioCache = useRef<Map<string, HTMLAudioElement>>(new Map());
+  const navigate = useNavigate();
 
   // Play sound function
   const playSound = (soundUrl: string) => {
@@ -366,6 +368,15 @@ export const BubbleMiniGamePage = () => {
       style={{ backgroundImage: `url(${minigameBackground})` }}
       className="h-screen w-screen bg-cover bg-center relative overflow-hidden"
     >
+      {/* Back button */}
+      <div className="absolute top-4 left-4 z-10">
+        <button
+          onClick={() => navigate('/')}
+          className="bg-white/90 backdrop-blur-sm rounded-lg px-4 py-2 shadow-lg hover:bg-white/100 transition-colors"
+        >
+          <span className="text-sm text-gray-800 font-medium">← Retour</span>
+        </button>
+      </div>
 
       {/* Instructions */}
       <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10">

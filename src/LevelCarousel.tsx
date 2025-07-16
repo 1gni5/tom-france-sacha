@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { LevelCard } from "./LevelCard";
 import jungleBackground from "./assets/jungleBackground.png";
 import transportBackground from "./assets/transportBackground.jpg";
@@ -8,6 +9,7 @@ interface Level {
   id: number;
   title: string;
   backgroundImage: string;
+  route?: string; // Optional route for special levels
 }
 
 // Sample levels data
@@ -16,6 +18,7 @@ const levels: Level[] = [
     id: 1,
     title: "Niveau 1 : les animaux",
     backgroundImage: jungleBackground,
+    route: "/bubble-minigame",
   },
   {
     id: 2,
@@ -35,6 +38,7 @@ interface LevelCarouselProps {
 
 export const LevelCarousel = ({ onPlay }: LevelCarouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const navigate = useNavigate();
 
   const goToPrevious = () => {
     setCurrentIndex((prevIndex) =>
@@ -49,7 +53,14 @@ export const LevelCarousel = ({ onPlay }: LevelCarouselProps) => {
   };
 
   const handlePlay = () => {
-    onPlay(levels[currentIndex].id);
+    const currentLevel = levels[currentIndex];
+    if (currentLevel.route) {
+      // Navigate to the specified route
+      navigate(currentLevel.route);
+    } else {
+      // Use the original onPlay function for other levels
+      onPlay(currentLevel.id);
+    }
   };
 
   return (
