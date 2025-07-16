@@ -135,7 +135,7 @@ export const BubbleMiniGamePage = () => {
       setTimeLeft(prev => {
         if (prev <= 1) {
           setGameEnded(true);
-          
+
           // Mark category as completed if there's a categoryId
           const categoryId = location.state?.categoryId;
           if (categoryId) {
@@ -143,7 +143,7 @@ export const BubbleMiniGamePage = () => {
               console.error('Error marking category as completed:', error);
             });
           }
-          
+
           // Navigate to victory page when timer ends
           navigate('/victory');
           return 0;

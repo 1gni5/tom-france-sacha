@@ -72,14 +72,14 @@ export async function updateCategory(id: number, title: string, picture: File): 
     const db = await getDatabase();
     const transaction = db.transaction('categories', 'readwrite');
     const store = transaction.objectStore('categories');
-    
+
     // Get existing category to preserve isCompleted flag
     const existingCategory = await store.get(id);
-    
-    await store.put({ 
-        id, 
-        title, 
-        picture, 
+
+    await store.put({
+        id,
+        title,
+        picture,
         createdAt: new Date().toISOString(),
         isCompleted: existingCategory?.isCompleted || false
     });
@@ -90,11 +90,11 @@ export async function markCategoryCompleted(id: number, completed: boolean = tru
     const db = await getDatabase();
     const transaction = db.transaction('categories', 'readwrite');
     const store = transaction.objectStore('categories');
-    
+
     // Get existing category
     const existingCategory = await store.get(id);
     if (existingCategory) {
-        await store.put({ 
+        await store.put({
             ...existingCategory,
             isCompleted: completed
         });

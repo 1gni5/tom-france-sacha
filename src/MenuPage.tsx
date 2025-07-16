@@ -22,12 +22,12 @@ export const MenuPage = () => {
       try {
         const categories = await getCategories();
         const words = await getWords();
-        
+
         // Calculate progress percentage
         const completedCategories = categories.filter(cat => cat.isCompleted).length;
         const totalCategories = categories.length;
         const percentage = totalCategories > 0 ? Math.round((completedCategories / totalCategories) * 100) : 0;
-        
+
         setProgressPercentage(percentage);
         setTotalWords(words.length);
       } catch (error) {
