@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { addCategory, addWord } from "@/lib/db"
+import { addCategoryWithWords } from "@/lib/db"
 import { useState, useRef } from "react"
 import JSZip from "jszip"
 
@@ -57,7 +57,8 @@ export function UploadZipDialog() {
 
         // Create category (level) with background
         if (backgroundFile) {
-          const categoryId = await addCategory(dirName, backgroundFile)
+          // Collect all words for this category first
+          const wordsToAdd: Array<{ text: string; audio: File; image: File }> = []
 
           // Find all image/audio pairs in this directory
           const filesInDir = Object.keys(zipContent.files)
@@ -85,8 +86,7 @@ export function UploadZipDialog() {
             }
           })
 
-          // Create words for each complete pair
-          let wordsCreated = 0
+          // Prepare words data
           for (const [wordName, files] of Object.entries(fileGroups)) {
             if (files.image && files.audio) {
               try {
@@ -104,16 +104,20 @@ export function UploadZipDialog() {
                   type: audioBlob.type || 'audio/mpeg'
                 })
 
-                // Add word to database
-                await addWord(wordName, audioFile, imageFile, categoryId)
-                wordsCreated++
+                wordsToAdd.push({
+                  text: wordName,
+                  audio: audioFile,
+                  image: imageFile
+                })
               } catch (error) {
                 console.error(`Error processing word "${wordName}":`, error)
               }
             }
           }
 
-          setUploadProgress(`✅ Niveau "${dirName}" terminé : ${wordsCreated} mots ajoutés`)
+          // Add category with all words in bulk
+          await addCategoryWithWords(dirName, backgroundFile, wordsToAdd)
+          setUploadProgress(`✅ Niveau "${dirName}" terminé : ${wordsToAdd.length} mots ajoutés`)
         } else {
           setUploadProgress(`⚠️ Niveau "${dirName}" ignoré : aucune image de fond trouvée`)
           console.warn(`No background image found for level: ${dirName}`)

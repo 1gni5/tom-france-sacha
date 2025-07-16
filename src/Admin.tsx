@@ -22,9 +22,7 @@ const Button: React.FC<ButtonProps> = ({ children, variant = 'default', ...props
     );
 };
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> { }
-
-const Input: React.FC<InputProps> = ({ ...props }) => (
+const Input: React.FC<React.InputHTMLAttributes<HTMLInputElement>> = ({ ...props }) => (
     <input className="border rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500" {...props} />
 );
 
@@ -54,7 +52,7 @@ const Admin: React.FC = () => {
         categoryId: null,
     });
     const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
-    const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+    const [editingCategory, setEditingCategory] = useState<{ id?: number; title: string; picture: File | null } | null>(null);
 
     useEffect(() => {
         loadCategories();
@@ -84,7 +82,20 @@ const Admin: React.FC = () => {
 
     const handleUpdateCategory = async () => {
         if (editingCategory && editingCategory.title) {
-            await updateCategory(editingCategory.id!, editingCategory.title, editingCategory.picture || categories.find(c => c.id === editingCategory.id)!.picture);
+            const pictureToUse = editingCategory.picture || null;
+            if (pictureToUse) {
+                await updateCategory(editingCategory.id!, editingCategory.title, pictureToUse);
+            } else {
+                // Keep existing picture if no new one provided
+                const existingCategory = categories.find(c => c.id === editingCategory.id);
+                if (existingCategory) {
+                    // Convert base64 back to File for the update function
+                    const response = await fetch(existingCategory.picture);
+                    const blob = await response.blob();
+                    const file = new File([blob], 'image.jpg', { type: blob.type });
+                    await updateCategory(editingCategory.id!, editingCategory.title, file);
+                }
+            }
             setEditingCategory(null);
             loadCategories();
         }
@@ -162,13 +173,17 @@ const Admin: React.FC = () => {
                             <Card key={category.id} className="flex justify-between items-center">
                                 <div>
                                     <h3 className="font-medium">{category.title}</h3>
-                                    <img src={URL.createObjectURL(category.picture)} alt={category.title} className="w-16 h-16 object-cover mt-2" />
+                                    <img src={category.picture} alt={category.title} className="w-16 h-16 object-cover mt-2" />
                                 </div>
                                 <div className="flex gap-2">
                                     <Button
                                         variant="secondary"
                                         onClick={() => {
-                                            setEditingCategory(category);
+                                            setEditingCategory({
+                                                id: category.id,
+                                                title: category.title,
+                                                picture: null
+                                            });
                                             setNewCategory({ title: '', picture: null });
                                         }}
                                     >
@@ -224,8 +239,8 @@ const Admin: React.FC = () => {
                             <Card key={word.id} className="flex justify-between items-center">
                                 <div>
                                     <h3 className="font-medium">{word.text}</h3>
-                                    <audio controls src={URL.createObjectURL(word.audio)} className="mt-2" />
-                                    <img src={URL.createObjectURL(word.image)} alt={word.text} className="w-16 h-16 object-cover mt-2" />
+                                    <audio controls src={word.audio} className="mt-2" />
+                                    <img src={word.image} alt={word.text} className="w-16 h-16 object-cover mt-2" />
                                 </div>
                                 <Button variant="destructive" onClick={() => handleDeleteWord(word.id!)}>
                                     Delete

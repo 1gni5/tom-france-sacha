@@ -23,13 +23,11 @@ export const LevelCarousel = ({ onPlay }: LevelCarouselProps) => {
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        const categories = await getCategories();
-
-        // Convert categories to levels
+        const categories = await getCategories();        // Convert categories to levels
         const levelsFromDB: Level[] = await Promise.all(
           categories.map(async (category: Category, index: number) => {
-            // Convert File to URL for display
-            const backgroundUrl = URL.createObjectURL(category.picture);
+            // category.picture is now a base64 string
+            const backgroundUrl = category.picture;
 
             return {
               id: category.id!,

@@ -74,43 +74,35 @@ export const BubbleMiniGamePage = () => {
 
         setWordData(validWords);
 
-        // Convert Files to base64 and load assets
+        // Load assets directly from base64 strings
         const imagePromises = words.map(async (word) => {
           return new Promise<void>((resolve) => {
             const img = new Image();
-            const reader = new FileReader();
-            reader.onload = () => {
-              img.src = reader.result as string;
-              img.onload = () => {
-                imageCache.current.set(word.image.name, img);
-                resolve();
-              };
-              img.onerror = () => {
-                console.error(`Failed to load image: ${word.image.name}`);
-                resolve();
-              };
+            img.onload = () => {
+              imageCache.current.set(word.text, img); // Use word.text as key since we don't have filename
+              resolve();
             };
-            reader.readAsDataURL(word.image);
+            img.onerror = () => {
+              console.error(`Failed to load image for word: ${word.text}`);
+              resolve();
+            };
+            img.src = word.image; // word.image is now a base64 string
           });
         });
 
         const audioPromises = words.map(async (word) => {
           return new Promise<void>((resolve) => {
             const audio = new Audio();
-            const reader = new FileReader();
-            reader.onload = () => {
-              audio.src = reader.result as string;
-              audio.oncanplaythrough = () => {
-                audioCache.current.set(word.audio.name, audio);
-                resolve();
-              };
-              audio.onerror = () => {
-                console.error(`Failed to load audio: ${word.audio.name}`);
-                resolve();
-              };
-              audio.preload = 'auto';
+            audio.oncanplaythrough = () => {
+              audioCache.current.set(word.text, audio); // Use word.text as key
+              resolve();
             };
-            reader.readAsDataURL(word.audio);
+            audio.onerror = () => {
+              console.error(`Failed to load audio for word: ${word.text}`);
+              resolve();
+            };
+            audio.src = word.audio; // word.audio is now a base64 string
+            audio.preload = 'auto';
           });
         });
 
@@ -182,8 +174,8 @@ export const BubbleMiniGamePage = () => {
       baseX: x,
       isOpen: false,
       text: content.text,
-      image: content.image.name,
-      sound: content.audio.name,
+      image: content.text, // Use text as key for image cache
+      sound: content.text, // Use text as key for audio cache
       color: COLORS[Math.floor(Math.random() * COLORS.length)],
       size: 120 + Math.random() * 80,
       speed: 0.1 + Math.random(),
