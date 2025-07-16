@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -114,15 +113,16 @@ export function UploadZipDialog() {
             }
           }
 
-          setUploadProgress(`Level "${dirName}" created with ${wordsCreated} words`)
+          setUploadProgress(`✅ Level "${dirName}" completed: ${wordsCreated} words added`)
         } else {
+          setUploadProgress(`⚠️ Level "${dirName}" skipped: no background image found`)
           console.warn(`No background image found for level: ${dirName}`)
         }
 
         processedLevels++
       }
 
-      setUploadProgress(`✅ Successfully processed ${totalLevels} levels!`)
+      setUploadProgress(`🎉 Import completed! ${totalLevels} levels processed successfully`)
 
       // Reset form after a delay
       setTimeout(() => {
@@ -131,7 +131,7 @@ export function UploadZipDialog() {
         if (fileInputRef.current) {
           fileInputRef.current.value = ""
         }
-      }, 3000)
+      }, 4000)
 
     } catch (error) {
       console.error('Error processing zip file:', error)
@@ -227,12 +227,6 @@ export function UploadZipDialog() {
             </div>
           </div>
         </div>
-
-        <DialogFooter>
-          <Button variant="outline" disabled={isUploading}>
-            Close
-          </Button>
-        </DialogFooter>
       </DialogContent>
     </Dialog>
   )
