@@ -60,7 +60,7 @@ export const BubbleMiniGamePage = () => {
   const navigate = useNavigate();
 
   // Timer state - 1.30 minutes = 90 seconds
-  const [timeLeft, setTimeLeft] = useState(90);
+  const [timeLeft, setTimeLeft] = useState(5);
   const [gameEnded, setGameEnded] = useState(false);
 
   // Play sound function
